@@ -27,15 +27,17 @@ class Scraper
     html=open(profile_url)
     doc=Nokogiri::HTML(html)
     h={}
-    sns=['twitter','linkedin','github','blog']
+    sns=['twitter','linkedin','github']
     i=0 
     while i < doc.css('.social-icon-container a').length
       a=doc.css('.social-icon-container a')[i].attribute('href').value
+      b=doc.css('.social-icon-container img')[i].attribute('src').value
       sns.each{|x| 
-        if a.include?(x)
+        if b.include?(x)
           h[x.to_sym]=a
         end
       }
+      h[:blog]=a if b.include?('rss')
       i+=1
     end
     h[:profile_quote]=doc.css('.profile-quote').text
